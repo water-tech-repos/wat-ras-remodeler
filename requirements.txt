@@ -1,0 +1,16 @@
+affine==2.3.1
+attrs==22.1.0
+click==8.1.3
+iniconfig==1.1.1
+numpy==1.23.3
+packaging==21.3
+pandas==1.5.0
+pluggy==1.0.0
+py==1.11.0
+pydsstools @ file://./bin/pydsstools-2.1-cp38-cp38-linux_x86_64.whl
+pyparsing==3.0.9
+pytest==7.1.3
+python-dateutil==2.8.2
+pytz==2022.2.1
+six==1.16.0
+tomli==2.0.1
