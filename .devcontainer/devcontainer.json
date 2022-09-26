@@ -43,12 +43,8 @@
 		}
 	},
 
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip install ./bin/pydsstools-2.1-cp38-cp38-linux_x86_64.whl",
-
+	"postCreateCommand": "pip3 --disable-pip-version-check --no-cache-dir install -r requirements.txt",
+	
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode",
 	"features": {
