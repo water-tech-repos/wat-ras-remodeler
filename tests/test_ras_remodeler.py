@@ -1,4 +1,4 @@
-import ras_remodeler
+from ras_remodeler import create_plan_tmp_hdf, set_plan_hdf_hydrograph
 
 
 def test_create_plan_tmp_hdf():

@@ -2,6 +2,7 @@
 import os
 from pydsstools.heclib.dss import HecDss
 import pandas as pd
+import numpy as np
 from fs_util import get_file
 
 
@@ -53,4 +54,4 @@ def read_csv_timeseries(csv_uri: str, sep: str = ',') -> pd.DataFrame:
     Returns:
         pd.DataFrame: _description_
     """
-    return pd.read_csv(csv_uri, sep=sep, parse_dates=['time'], header=0, names=['time', 'value'])
+    return pd.read_csv(csv_uri, sep=sep, parse_dates=['time'], header=0, names=['time', 'value'], dtype={'value': np.dtype('float32')})
