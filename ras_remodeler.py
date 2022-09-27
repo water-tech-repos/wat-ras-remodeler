@@ -1,40 +1,16 @@
 #!/usr/local/bin/python
 """CLI tools for reshaping HEC-RAS model data."""
-from typing import List, Union
+from typing import Union
 import os
 import click
-import h5py
-from fs_helper import get_file, put_file
+from fs_util import get_file, put_file
+from dss_util import read_csv_timeseries, read_dss_timeseries
+from hdf_util import copy_hdf, update_hydrograph
 
 
 @click.group()
 def main():
     """CLI Entrypoint"""
-
-
-def copy_hdf(src_hdf_uri: str, dst_hdf_uri: str, remove_groups: Union[List[str], None] = None) -> None:
-    """Copy an HDF file and optionally remove some groups.
-
-    Args:
-        src_hdf_uri (str): URI of the source HDF file.
-        dst_hdf_uri (str): URI to save the resulting HDF file.
-        remove_groups (List[str] | None, optional): list of group names to
-        remove. Defaults to None.
-    """
-    # copy data to local temp files and remove group(s)
-    src_filepath = get_file(src_hdf_uri)
-    temp_filepath = get_file()
-    with h5py.File(src_filepath, 'r') as src, h5py.File(temp_filepath, 'w') as temp:
-        for attr in src.attrs.keys():
-            temp.attrs[attr] = src.attrs.get(attr)
-        for group in src.keys():
-            if remove_groups and not group in remove_groups:
-                src.copy(group, temp)
-    # copy result file to URI
-    put_file(temp_filepath, dst_hdf_uri)
-    # delete temp files
-    os.remove(src_filepath)
-    os.remove(temp_filepath)
 
 
 @main.command()
@@ -57,15 +33,37 @@ def create_plan_tmp_hdf(src_plan_hdf: str, dst_dir: Union[str, None]) -> None:
 @click.argument('plan_hdf')
 @click.argument('plan_hdf_hydrograph_name')
 @click.argument('src_hydrograph')
-@click.option('--type', type=click.Choice(['DSS', 'CSV']), default='DSS')
-@click.option('--auto-set-dates', is_flag=True, help="Set 'StartDate' and 'EndDate' in HDF hydrograph attributes based on hydrograph start/end datetimes")
+@click.option('--input_type', type=click.Choice(['DSS', 'CSV']), default='DSS')
+@click.option('--keep_dates', is_flag=True, help="Do not modify 'StartDate' and 'EndDate' in HDF hydrograph attributes based on hydrograph start/end datetimes")
 def set_plan_hdf_hydrograph(plan_hdf: str, plan_hdf_hydrograph_name: str, src_hydrograph: str,
-                            type: str = 'DSS', auto_set_dates: bool = False) -> None:
-    print(plan_hdf)
-    print(plan_hdf_hydrograph_name)
-    print(src_hydrograph)
-    print(format)
-    print(auto_set_dates)
+                            input_type: str = 'DSS', keep_dates: bool = False) -> None:
+    """Overwrite a hydorgraph in a HEC-RAS plan HDF file.
+
+    Args:
+        plan_hdf (str): URI of existing HEC-RAS HDF plan file
+        plan_hdf_hydrograph_name (str): name of the hydrograph in the HDF file to overwrite
+        (e.g. 'River: White  Reach: Muncie  RS: 15696.24').
+        src_hydrograph (str): URI of hydrograph to overwrite the data
+        input_type (str, optional): one of ['DSS', 'CSV']. Defaults to 'DSS'. DSS file should be in <URI>:<pathname>
+        format.
+        keep_dates (bool, optional): _description_. Defaults to False.
+
+    Raises:
+        ValueError
+    """
+    temp_hdf_filepath = get_file(plan_hdf)
+    if input_type == 'DSS':
+        timeseries = read_dss_timeseries(src_hydrograph)
+    elif input_type == 'CSV':
+        timeseries = read_csv_timeseries(src_hydrograph)
+    else:
+        raise ValueError(
+            "Invalid input_type option. Must be one of ['DSS', 'CSV']")
+    update_hydrograph(temp_hdf_filepath, plan_hdf_hydrograph_name,
+                      timeseries, keep_dates=keep_dates)
+    # overwrite existing file with new data
+    os.remove(plan_hdf)
+    put_file(temp_hdf_filepath, plan_hdf)
 
 
 if __name__ == '__main__':

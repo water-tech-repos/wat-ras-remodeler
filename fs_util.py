@@ -3,6 +3,7 @@ Helper functions for filesystems.
 For S3 access, the following environment vairables can be set and picked up for authentication:
  - AWS_ACCESS_KEY_ID
  - AWS_SECRET_ACCESS_KEY
+ - AWS_SESSION_TOKEN
 For Azure blob storage the following enviornment variables can be set and picked up for authentication:
  - AZURE_STORAGE_CONNECTION_STRING
  - AZURE_STORAGE_ACCOUNT_NAME
@@ -98,7 +99,7 @@ def put_string(src_str: str, dst_uri: str) -> None:
         file.write(src_str)
 
 
-def get_file(src_uri: Union[str, None] = None) -> str:
+def get_file(src_uri: Union[str, None] = None, ext: str = "") -> str:
     """Get a local filepath string copied from a URI. Can be local filesystem, S3 or Azure blob storage. A path to a
     temporary file will be returned pointing to the created temp file on the local file system. Large files are copied
     in chunks to avoid running out of memory. If src_uri is None, a temp filepath will be returned, but no file is
@@ -112,11 +113,17 @@ def get_file(src_uri: Union[str, None] = None) -> str:
         For Azure use:
          - abfs://<container_name>/<key_name>
         For local files use the filesystem path.
+        ext (str): extension to use (e.g. .hdf). Default is empty string. If empty and src_uri is not None, extension
+        will be copied from src_uri
 
     Returns:
         str: path to temp file with data from URI
     """
-    temp_file_path = os.path.join(tempfile.gettempdir(), str(uuid.uuid4()))
+    # some file types require the extension to match
+    if src_uri is not None and len(os.path.splitext(src_uri)) == 2 and ext == "":
+        ext = os.path.splitext(src_uri)[1]
+    temp_file_path = os.path.join(
+        tempfile.gettempdir(), str(uuid.uuid4())) + ext
     if src_uri:
         with fsspec.open(src_uri, 'rb') as src_file, fsspec.open(temp_file_path, 'wb') as temp_file:
             for chunk in read_in_chunks(src_file):
