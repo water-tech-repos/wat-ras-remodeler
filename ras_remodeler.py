@@ -2,10 +2,9 @@
 """CLI tools for reshaping HEC-RAS model data."""
 from typing import List, Union
 import os
-import tempfile
 import click
 import h5py
-from fs_helper import get_file, get_bytes, put_bytes
+from fs_helper import get_file, put_file
 
 
 @click.group()
@@ -22,24 +21,20 @@ def copy_hdf(src_hdf_uri: str, dst_hdf_uri: str, remove_groups: Union[List[str],
         remove_groups (List[str] | None, optional): list of group names to
         remove. Defaults to None.
     """
-    src_file = get_file(src_hdf_uri)
-    # tried this with an in memory temp file but HDF library does not seem to work when copying the temp file back onto
-    # disk. A file is created, but is corrupted. Possibly a bug.
-    dst_file = os.path.join(tempfile.gettempdir(), "temp.hdf")
-    src = h5py.File(src_file, 'r')
-    dst = h5py.File(dst_file, 'w')
-    for attr in src.attrs.keys():
-        dst.attrs[attr] = src.attrs.get(attr)
-    for group in src.keys():
-        if remove_groups and not group in remove_groups:
-            src.copy(group, dst)
-    # close hdf file handles
-    src.close()
-    dst.close()
-    # close source file
-    src_file.close()
-    # copy temp file to URI
-    put_bytes(get_bytes(dst_file), dst_hdf_uri)
+    # copy data to local temp files and remove group(s)
+    src_filepath = get_file(src_hdf_uri)
+    temp_filepath = get_file()
+    with h5py.File(src_filepath, 'r') as src, h5py.File(temp_filepath, 'w') as temp:
+        for attr in src.attrs.keys():
+            temp.attrs[attr] = src.attrs.get(attr)
+        for group in src.keys():
+            if remove_groups and not group in remove_groups:
+                src.copy(group, temp)
+    # copy result file to URI
+    put_file(temp_filepath, dst_hdf_uri)
+    # delete temp files
+    os.remove(src_filepath)
+    os.remove(temp_filepath)
 
 
 @main.command()
@@ -62,10 +57,10 @@ def create_plan_tmp_hdf(src_plan_hdf: str, dst_dir: Union[str, None]) -> None:
 @click.argument('plan_hdf')
 @click.argument('plan_hdf_hydrograph_name')
 @click.argument('src_hydrograph')
-@click.option('--format', type=click.Choice(['DSS', 'CSV']), default='DSS')
+@click.option('--type', type=click.Choice(['DSS', 'CSV']), default='DSS')
 @click.option('--auto-set-dates', is_flag=True, help="Set 'StartDate' and 'EndDate' in HDF hydrograph attributes based on hydrograph start/end datetimes")
 def set_plan_hdf_hydrograph(plan_hdf: str, plan_hdf_hydrograph_name: str, src_hydrograph: str,
-                            format: str = 'DSS', auto_set_dates: bool = False):
+                            type: str = 'DSS', auto_set_dates: bool = False) -> None:
     print(plan_hdf)
     print(plan_hdf_hydrograph_name)
     print(src_hydrograph)

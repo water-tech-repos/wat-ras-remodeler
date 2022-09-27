@@ -11,10 +11,33 @@ For Azure blob storage the following enviornment variables can be set and picked
  - AZURE_STORAGE_CLIENT_SECRET
  - AZURE_STORAGE_CLIENT_ID
  - AZURE_STORAGE_TENANT_ID
+
+ String and bytes functions will store the data in memory. The file functions will create temporary files so as to not
+ run out of memory.
  """
 import tempfile
 from typing import BinaryIO
+from typing import Iterator, Union
+import uuid
+import os
 import fsspec
+
+
+def read_in_chunks(file_obj: Union[BinaryIO, fsspec.core.OpenFile], size_in_bytes: int = 10000000) -> Iterator[bytes]:
+    """Generator function to read file in chunks to not run out of memory
+
+    Args:
+        file_obj (Union[BinaryIO, fsspec.OpenFile]): file to read in chunks
+        size_in_bytes (int, optional): max number of bytes to read per chunk. Defaults to 10 MB.
+
+    Yields:
+        Iterator[bytes]: iterator of chunks of bytes
+    """
+    while True:
+        chunk = file_obj.read(size_in_bytes)
+        if not chunk:
+            break
+        yield chunk
 
 
 def get_bytes(src_uri: str) -> bytes:
@@ -75,12 +98,15 @@ def put_string(src_str: str, dst_uri: str) -> None:
         file.write(src_str)
 
 
-def get_file(src_uri: str) -> BinaryIO:
-    """Get file object from a URI. Can be local filesystem, S3 or Azure blob storage. You must close it when you are
-    done with it!
+def get_file(src_uri: Union[str, None] = None) -> str:
+    """Get a local filepath string copied from a URI. Can be local filesystem, S3 or Azure blob storage. A path to a
+    temporary file will be returned pointing to the created temp file on the local file system. Large files are copied
+    in chunks to avoid running out of memory. If src_uri is None, a temp filepath will be returned, but no file is
+    created. You should delete the temp files when you are done with them.
 
     Args:
-        src_uri (str): URI to the file.
+        src_uri (Union[str, None]): URI to the source file or None. If None, a temp filepath will be returned (but no
+        file is created).
         For S3 use:
          - s3://<bucket_name>/<key_name>
         For Azure use:
@@ -88,20 +114,23 @@ def get_file(src_uri: str) -> BinaryIO:
         For local files use the filesystem path.
 
     Returns:
-        BinaryIO: file like object of the file's data
+        str: path to temp file with data from URI
     """
-    file = tempfile.TemporaryFile()
-    with fsspec.open(src_uri, 'rb') as src_file:
-        file.write(src_file.read())
-    return file
+    temp_file_path = os.path.join(tempfile.gettempdir(), str(uuid.uuid4()))
+    if src_uri:
+        with fsspec.open(src_uri, 'rb') as src_file, fsspec.open(temp_file_path, 'wb') as temp_file:
+            for chunk in read_in_chunks(src_file):
+                temp_file.write(chunk)
+    return temp_file_path
 
 
-def put_file(src_file: BinaryIO, dst_uri: str) -> None:
-    """Write file object to a URI. Can be local filesystem, S3 or Azure blob storage.
+def put_file(src_uri: str, dst_uri: str) -> None:
+    """Copy data at a URI to another URI. Can be local filesystem, S3 or Azure blob storage.
 
     Args:
-        src_file (BinaryIO): file like object to write
+        src_uri (str): source uri to read from
         dst_uri (str): destination uri to write the file
     """
-    with fsspec.open(dst_uri, 'wb') as file:
-        file.write(src_file.read())
+    with fsspec.open(src_uri, 'rb') as src_file, fsspec.open(dst_uri, 'wb') as dst_file:
+        for chunk in read_in_chunks(src_file):
+            dst_file.write(chunk)
