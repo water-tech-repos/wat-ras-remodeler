@@ -26,6 +26,8 @@ def copy_hdf(src_hdf_uri: str, dst_hdf_uri: str, remove_groups: Union[List[str],
         for group in src.keys():
             if remove_groups and not group in remove_groups:
                 src.copy(group, temp)
+            elif remove_groups is None:
+                src.copy(group, temp)
     # copy result file to URI
     put_file(temp_filepath, dst_hdf_uri)
     # delete temp files
