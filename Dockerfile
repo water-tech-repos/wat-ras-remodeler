@@ -2,7 +2,7 @@ FROM python:3.8-slim
 
 # install pydsstools non-python dependencies
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends wget gfortran
+    && apt-get -y install --no-install-recommends gfortran
 
 RUN mkdir /opt/ras_remodeler
 WORKDIR /opt/ras_remodeler
