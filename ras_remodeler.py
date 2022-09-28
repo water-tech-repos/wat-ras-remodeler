@@ -46,7 +46,7 @@ def set_plan_hdf_hydrograph(plan_hdf: str, plan_hdf_hydrograph_name: str, src_hy
         src_hydrograph (str): URI of hydrograph to overwrite the data
         input_type (str, optional): one of ['DSS', 'CSV']. Defaults to 'DSS'. DSS file should be in <URI>:<pathname>
         format.
-        keep_dates (bool, optional): _description_. Defaults to False.
+        keep_dates (bool, optional): Defaults to False.
 
     Raises:
         ValueError
