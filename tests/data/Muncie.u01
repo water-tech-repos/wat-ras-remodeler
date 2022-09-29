@@ -1,0 +1,72 @@
+Flow Title=Flow Boundary Conditions
+Program Version=6.10
+Use Restart= 0 
+Restart Filename=Muncie.p05.02JAN1900 1200.rst
+Initial Flow Loc=White           ,Muncie          ,15696.24,1000
+Boundary Location=White           ,Muncie          ,15696.24,        ,                ,                ,                ,                                
+Interval=1HOUR
+Flow Hydrograph= 65 
+   13500   14000   14500   15000   15500   16000   16500   17000   17500   18000
+   18500   19000   19500   20000   20500   21000   21000   21000   21000   21000
+   21000   20500   20000   19500   19000   18500   18000   17500   17000   16500
+   16000   15500   1500014583.3314166.67   1375013333.3312916.67   1250012083.33
+11666.67   1125010833.3310416.67   10000 9666.67 9333.33    9000 8666.67 8333.33
+    8000 7666.67 7333.33    7000 6666.67 6333.33    6000    5875    5750    5625
+    5500    5375    5250    5125    5000
+Stage Hydrograph TW Check=0
+DSS Path=
+Use DSS=False
+Use Fixed Start Time=False
+Fixed Start Date/Time=,
+Is Critical Boundary=False
+Critical Boundary Flow=
+Boundary Location=White           ,Muncie          ,237.6455,        ,                ,                ,                ,                                
+Friction Slope=0.00064,0
+Met Point Raster Parameters=,,,,
+Precipitation Mode=Disable
+Wind Mode=No Wind Forces
+Air Density Mode=
+Met BC=Precipitation|Expanded View=0
+Met BC=Precipitation|Point Interpolation=Nearest
+Met BC=Precipitation|Gridded Source=DSS
+Met BC=Evapotranspiration|Expanded View=0
+Met BC=Evapotranspiration|Point Interpolation=Nearest
+Met BC=Evapotranspiration|Gridded Source=DSS
+Met BC=Wind Speed|Expanded View=0
+Met BC=Wind Speed|Constant Units=ft/s
+Met BC=Wind Speed|Point Interpolation=Nearest
+Met BC=Wind Speed|Gridded Source=DSS
+Met BC=Wind Direction|Expanded View=0
+Met BC=Wind Direction|Point Interpolation=Nearest
+Met BC=Wind Direction|Gridded Source=DSS
+Met BC=Wind Velocity X|Expanded View=0
+Met BC=Wind Velocity X|Constant Units=ft/s
+Met BC=Wind Velocity X|Point Interpolation=Nearest
+Met BC=Wind Velocity X|Gridded Source=DSS
+Met BC=Wind Velocity Y|Expanded View=0
+Met BC=Wind Velocity Y|Constant Units=ft/s
+Met BC=Wind Velocity Y|Point Interpolation=Nearest
+Met BC=Wind Velocity Y|Gridded Source=DSS
+Met BC=Air Density|Mode=Constant
+Met BC=Air Density|Expanded View=0
+Met BC=Air Density|Constant Value=1.225
+Met BC=Air Density|Point Interpolation=Nearest
+Met BC=Air Density|Gridded Source=DSS
+Met BC=Air Temperature|Expanded View=0
+Met BC=Air Temperature|Point Interpolation=Nearest
+Met BC=Air Temperature|Gridded Source=DSS
+Met BC=Humidity|Expanded View=0
+Met BC=Humidity|Point Interpolation=Nearest
+Met BC=Humidity|Gridded Source=DSS
+Met BC=Air Pressure|Expanded View=0
+Met BC=Air Pressure|Point Interpolation=Nearest
+Met BC=Air Pressure|Gridded Source=DSS
+Observed DSS Loc=White           ,Muncie          ,4570.628
+Observed DSS Filename=muncie.dss
+Observed DSS Pathname=/WHITE MUNCIE/4571/STAGE/01JAN1900-02JAN1900/5MIN/OBSERVED/
+Observed DSS Dn Dist=
+
+Observed DSS Loc=White           ,Muncie          ,4570.628
+Observed DSS Filename=muncie.dss
+Observed DSS Pathname=/WHITE MUNCIE/4571/FLOW/01JAN1900-02JAN1900/5MIN/OBSERVED_DISCHARGE/
+Observed DSS Dn Dist=0
