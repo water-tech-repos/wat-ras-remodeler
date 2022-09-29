@@ -2,6 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,linux,vim
 
 tests/data/Muncie.p04.tmp.hdf
+systemInfoEncoded.txt
 
 #
 .vscode/

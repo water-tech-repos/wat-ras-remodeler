@@ -3,8 +3,6 @@ import os
 from click.testing import CliRunner
 import h5py
 from ras_remodeler import create_plan_tmp_hdf, set_plan_hdf_hydrograph
-from fs_util import get_temp_file
-from hdf_util import copy_hdf
 
 
 def teardown_module():
@@ -24,16 +22,23 @@ def test_create_plan_tmp_hdf():
 
 
 def test_set_plan_hdf_hydrograph():
-    """Test update hydrograph of HDF file"""
-    src_file = "tests/data/Muncie.p04.hdf"
-    temp_file = get_temp_file(ext=".hdf")
-    copy_hdf(src_file, temp_file, ["Results"])
+    """Test update hydrograph of HDF file. MUST RUN AFTER test_create_plan_tmp_hdf!"""
     hydrograph_name = "River: White  Reach: Muncie  RS: 15696.24"
-    hydrograph = "tests/data/hydrograph.dss:/REGULAR/TIMESERIES/FLOW//1HOUR/Ex1/"
+    # dss hydrograph that doesn't have realistic flows
+    #hydrograph = "tests/data/hydrograph.dss:/REGULAR/TIMESERIES/FLOW//1HOUR/Ex1/"
+    # csv with realistic flows
+    hydrograph = "tests/data/hydrograph2.csv"
+    hdf_filepath = "tests/data/Muncie.p04.tmp.hdf"
     runner = CliRunner()
     runner.invoke(set_plan_hdf_hydrograph, [
-                  temp_file, hydrograph_name, hydrograph])
-    with h5py.File(temp_file) as file:
+                  hdf_filepath, hydrograph_name, hydrograph, "--keep_dates", "--input_type", "CSV"])
+    with h5py.File(hdf_filepath) as file:
         dataset = file["/Event Conditions/Unsteady/Boundary Conditions/Flow Hydrographs/River: White  Reach: Muncie  RS: 15696.24"]
-        assert dataset.shape == (7, 2)
-    os.remove(temp_file)
+        assert dataset[16][1] == 22000
+        #assert dataset.shape == (7, 2) # for DSS test
+    # check that HEC-RAS runs
+    assert os.system(
+        "export LD_LIBRARY_PATH=./bin/libs:./bin/libs/mkl && ./bin/RAS610/RasUnsteady ./tests/data/Muncie.c04 b04") == 0
+    # check that results were created
+    with h5py.File(hdf_filepath, 'r') as file:
+        assert "Results" in file.keys()
