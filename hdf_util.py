@@ -24,7 +24,7 @@ def copy_hdf(src_hdf_uri: str, dst_hdf_uri: str, remove_groups: Union[List[str],
         for attr in src.attrs.keys():
             temp.attrs[attr] = src.attrs.get(attr)
         for group in src.keys():
-            if remove_groups and not group in remove_groups:
+            if remove_groups and group not in remove_groups:
                 src.copy(group, temp)
             elif remove_groups is None:
                 src.copy(group, temp)

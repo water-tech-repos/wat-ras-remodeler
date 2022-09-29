@@ -1,11 +1,16 @@
 """Integration tests for ras remodeler"""
-from os.path import exists
-from click.testing import CliRunner
-from ras_remodeler import create_plan_tmp_hdf, set_plan_hdf_hydrograph
-import h5py
 import os
+from click.testing import CliRunner
+import h5py
+from ras_remodeler import create_plan_tmp_hdf, set_plan_hdf_hydrograph
 from fs_util import get_temp_file
 from hdf_util import copy_hdf
+
+
+def teardown_module():
+    """Cleanup created test files."""
+    if os.path.exists("tests/data/Muncie.p04.tmp.hdf"):
+        os.remove("tests/data/Muncie.p04.tmp.hdf")
 
 
 def test_create_plan_tmp_hdf():
@@ -13,7 +18,7 @@ def test_create_plan_tmp_hdf():
     src_file = "tests/data/Muncie.p04.hdf"
     runner = CliRunner()
     runner.invoke(create_plan_tmp_hdf, [src_file])
-    assert exists("tests/data/Muncie.p04.tmp.hdf")
+    assert os.path.exists("tests/data/Muncie.p04.tmp.hdf")
 
 
 def test_set_plan_hdf_hydrograph():
