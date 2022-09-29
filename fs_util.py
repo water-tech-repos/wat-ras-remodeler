@@ -66,6 +66,7 @@ def put_bytes(src_bytes: bytes, dst_uri: str) -> None:
         src_bytes (bytes): bytes object to write
         dst_uri (str): destination uri to write the file
     """
+    # Data is overwritten with mode='wb' so no need to delete the file beforehand if it exists
     with fsspec.open(dst_uri, 'wb') as file:
         file.write(src_bytes)
 
@@ -95,11 +96,12 @@ def put_string(src_str: str, dst_uri: str) -> None:
         src_str (str): string object to write
         dst_uri (str): destination uri to write the file
     """
+    # Data is overwritten with mode='w' so no need to delete the file beforehand if it exists
     with fsspec.open(dst_uri, 'w') as file:
         file.write(src_str)
 
 
-def get_file(src_uri: Union[str, None] = None, ext: str = "") -> str:
+def get_temp_file(src_uri: Union[str, None] = None, ext: str = "") -> str:
     """Get a local filepath string copied from a URI. Can be local filesystem, S3 or Azure blob storage. A path to a
     temporary file will be returned pointing to the created temp file on the local file system. Large files are copied
     in chunks to avoid running out of memory. If src_uri is None, a temp filepath will be returned, but no file is
@@ -138,6 +140,7 @@ def put_file(src_uri: str, dst_uri: str) -> None:
         src_uri (str): source uri to read from
         dst_uri (str): destination uri to write the file
     """
+    # Data is overwritten with mode='wb' so no need to delete the file beforehand if it exists
     with fsspec.open(src_uri, 'rb') as src_file, fsspec.open(dst_uri, 'wb') as dst_file:
         for chunk in read_in_chunks(src_file):
             dst_file.write(chunk)

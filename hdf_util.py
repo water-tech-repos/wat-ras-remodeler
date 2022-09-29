@@ -5,7 +5,7 @@ from datetime import timedelta, datetime
 import h5py
 import pandas as pd
 import numpy as np
-from fs_util import get_file, put_file
+from fs_util import get_temp_file, put_file
 
 
 def copy_hdf(src_hdf_uri: str, dst_hdf_uri: str, remove_groups: Union[List[str], None] = None) -> None:
@@ -18,8 +18,8 @@ def copy_hdf(src_hdf_uri: str, dst_hdf_uri: str, remove_groups: Union[List[str],
         remove. Defaults to None.
     """
     # copy data to local temp files and remove group(s)
-    src_filepath = get_file(src_hdf_uri)
-    temp_filepath = get_file(ext=".hdf")
+    src_filepath = get_temp_file(src_hdf_uri)
+    temp_filepath = get_temp_file(ext=".hdf")
     with h5py.File(src_filepath, 'r') as src, h5py.File(temp_filepath, 'w') as temp:
         for attr in src.attrs.keys():
             temp.attrs[attr] = src.attrs.get(attr)

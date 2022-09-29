@@ -3,7 +3,7 @@
 from typing import Union
 import os
 import click
-from fs_util import get_file, put_file
+from fs_util import get_temp_file, put_file
 from dss_util import read_csv_timeseries, read_dss_timeseries
 from hdf_util import copy_hdf, update_hydrograph
 
@@ -106,7 +106,7 @@ def set_plan_hdf_hydrograph(plan_hdf: str, plan_hdf_hydrograph_name: str, src_hy
     Raises:
         ValueError
     """
-    temp_hdf_filepath = get_file(plan_hdf)
+    temp_hdf_filepath = get_temp_file(plan_hdf)
     if input_type == 'DSS':
         timeseries = read_dss_timeseries(src_hydrograph)
     elif input_type == 'CSV':

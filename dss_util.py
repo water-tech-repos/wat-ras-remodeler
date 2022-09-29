@@ -3,7 +3,7 @@ import os
 from pydsstools.heclib.dss import HecDss
 import pandas as pd
 import numpy as np
-from fs_util import get_file
+from fs_util import get_temp_file
 
 
 def read_dss_timeseries(dss_path: str, irregular: bool = False) -> pd.DataFrame:
@@ -25,7 +25,7 @@ def read_dss_timeseries(dss_path: str, irregular: bool = False) -> pd.DataFrame:
         entries.
     """
     uri, pathname = dss_path.rsplit(':', 1)
-    dss_filepath = get_file(uri)
+    dss_filepath = get_temp_file(uri)
     timeseries = pd.DataFrame(columns=['time', 'value'])
     with HecDss.Open(dss_filepath) as fid:
         dss_ts = fid.read_ts(pathname, regular=not irregular)
