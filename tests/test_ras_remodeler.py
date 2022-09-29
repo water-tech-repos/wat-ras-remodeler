@@ -19,6 +19,8 @@ def test_create_plan_tmp_hdf():
     runner = CliRunner()
     runner.invoke(create_plan_tmp_hdf, [src_file])
     assert os.path.exists("tests/data/Muncie.p04.tmp.hdf")
+    with h5py.File("tests/data/Muncie.p04.tmp.hdf", 'r') as file:
+        assert "Results" not in file.keys()
 
 
 def test_set_plan_hdf_hydrograph():
