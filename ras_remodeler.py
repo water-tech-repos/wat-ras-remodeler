@@ -10,7 +10,7 @@ from hdf_util import copy_hdf, update_hydrograph
 
 @click.group()
 def main():
-    """CLI Entrypoint"""
+    """ras_remodeler -- tools for reshaping HEC-RAS modeler data."""
 
 
 @main.command()
