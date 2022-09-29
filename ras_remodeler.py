@@ -68,8 +68,11 @@ def create_plan_tmp_hdf(src_plan_hdf: str, dst_dir: Union[str, None]) -> None:
         dst_dir (Union[str, None]): Directory to save resulting plan temp HDF file with Results group removed.
         (saved as *.p**.tmp.hdf). If None, file will be created in the same directory as source HDF file.
     """
-    dst_plan_hdf = os.path.join(dst_dir, os.path.splitext(os.path.basename(src_plan_hdf))[
-                                0] + ".tmp.hdf") if dst_dir else os.path.splitext(src_plan_hdf)[0] + ".tmp.hdf"
+    if dst_dir:
+        dst_plan_hdf = os.path.join(dst_dir, os.path.splitext(
+            os.path.basename(src_plan_hdf))[0])
+    else:
+        dst_plan_hdf = os.path.splitext(src_plan_hdf)[0] + ".tmp.hdf"
     copy_hdf(src_plan_hdf, dst_plan_hdf, ["Results"])
 
 
