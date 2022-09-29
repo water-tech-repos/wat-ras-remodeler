@@ -37,7 +37,7 @@ def create_plan_tmp_hdf(src_plan_hdf: str, dst_dir: Union[str, None]) -> None:
 @click.option('--keep_dates', is_flag=True, help="Do not modify 'StartDate' and 'EndDate' in HDF hydrograph attributes based on hydrograph start/end datetimes")
 def set_plan_hdf_hydrograph(plan_hdf: str, plan_hdf_hydrograph_name: str, src_hydrograph: str,
                             input_type: str = 'DSS', keep_dates: bool = False) -> None:
-    """Overwrite a hydorgraph in a HEC-RAS plan HDF file.
+    """Overwrite a hydrograph in a HEC-RAS plan HDF file.
 
     Args:
         plan_hdf (str): URI of existing HEC-RAS HDF plan file
