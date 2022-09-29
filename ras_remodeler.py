@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python3
 """CLI tools for reshaping HEC-RAS model data."""
 from typing import Union
 import os
