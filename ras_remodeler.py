@@ -117,7 +117,6 @@ def set_plan_hdf_hydrograph(plan_hdf: str, plan_hdf_hydrograph_name: str, src_hy
     update_hydrograph(temp_hdf_filepath, plan_hdf_hydrograph_name,
                       timeseries, keep_dates=keep_dates)
     # overwrite existing file with new data
-    os.remove(plan_hdf)
     put_file(temp_hdf_filepath, plan_hdf)
 
 
