@@ -3,12 +3,18 @@ import os
 from click.testing import CliRunner
 import h5py
 from ras_remodeler import create_plan_tmp_hdf, set_plan_hdf_hydrograph
+from tests.test_util import delete_if_exists
 
 
 def teardown_module():
     """Cleanup created test files."""
-    if os.path.exists("tests/data/Muncie.p04.tmp.hdf"):
-        os.remove("tests/data/Muncie.p04.tmp.hdf")
+    delete_if_exists("tests/data/Muncie.p04.tmp.hdf")
+    delete_if_exists("tests/data/Muncie.p04.tmp.hdf")
+    delete_if_exists("tests/data/Muncie.p04.tmp.hdf")
+    delete_if_exists("systemInfoEncoded.txt")
+    delete_if_exists("bco")
+    delete_if_exists("tests/data/Muncie.bco04")
+    delete_if_exists("Muncie.dss")
 
 
 def test_create_plan_tmp_hdf():
@@ -35,7 +41,7 @@ def test_set_plan_hdf_hydrograph():
     with h5py.File(hdf_filepath) as file:
         dataset = file["/Event Conditions/Unsteady/Boundary Conditions/Flow Hydrographs/River: White  Reach: Muncie  RS: 15696.24"]
         assert dataset[16][1] == 22000
-        #assert dataset.shape == (7, 2) # for DSS test
+        # assert dataset.shape == (7, 2) # for DSS test
     # check that HEC-RAS runs
     assert os.system(
         "export LD_LIBRARY_PATH=./bin/libs:./bin/libs/mkl && ./bin/RAS610/RasUnsteady ./tests/data/Muncie.c04 b04") == 0

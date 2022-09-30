@@ -1,8 +1,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python,linux,vim
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,linux,vim
 
-tests/data/Muncie.p04.tmp.hdf
-systemInfoEncoded.txt
+**/Muncie.p04.tmp.hdf
+**/systemInfoEncoded.txt
+**/bco
+**/Muncie.bco04
+**/Muncie.dss
 
 #
 .vscode/
