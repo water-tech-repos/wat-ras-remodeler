@@ -6,6 +6,8 @@
 **/bco
 **/Muncie.bco04
 **/Muncie.dss
+tests/data/
+bin/
 
 #
 .vscode/
