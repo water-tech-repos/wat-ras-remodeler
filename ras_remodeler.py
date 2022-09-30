@@ -10,42 +10,31 @@ from hdf_util import copy_hdf, update_hydrograph
 
 @click.group()
 def main():
-    """ras_remodeler -- tools for reshaping HEC-RAS modeler data.
+    """ras_remodeler -- tools for reshaping HEC-RAS model data.
 
     Supported filesystems are local, S3, and Azure.
 
+    \b
     For S3 access, the following environment vairables can be set and picked up for authentication:
-
      - AWS_ACCESS_KEY_ID
-
      - AWS_SECRET_ACCESS_KEY
-
      - AWS_SESSION_TOKEN
 
+    \b
     For Azure blob storage the following enviornment variables can be set and picked up for authentication:
-
      - AZURE_STORAGE_CONNECTION_STRING
-
      - AZURE_STORAGE_ACCOUNT_NAME
-
      - AZURE_STORAGE_ACCOUNT_KEY
-
      - AZURE_STORAGE_SAS_TOKEN
-
      - AZURE_STORAGE_CLIENT_SECRET
-
      - AZURE_STORAGE_CLIENT_ID
-
      - AZURE_STORAGE_TENANT_ID
 
+    \b
     Unless otherwise specified, paths to data can be specified on the command line though any of the following:
-
      - For local file use: `<filepath>`
-
      - For S3 use: `s3://<bucket_name>/<key_name>`
-
      - For Azure use: `abfs://<container_name>/<key_name>`
-
     """
 
 
@@ -54,6 +43,7 @@ Create a plan *.tmp.hdf file from a source plan HDF file with the "Results" grou
 
 SRC_PLAN_HDF  Exisiting plan HDF file.
 
+\b
 DST_DIR       Destination directory to save the new plan *.tmp.hdf file
               (saved as ".p**.tmp.hdf"). If none, file will be created in
               the same directory as the source HDF file.
@@ -81,7 +71,9 @@ Overwrite a hydrograph in a HEC-RAS plan HDF file.
 
 PLAN_HDF                    Existing plan HDF file.
 
-PLAN_HDF_HYDROGRAPH_NAME    Name of the hydrograph in the HDF file that will be overwritten.
+\b
+PLAN_HDF_HYDROGRAPH_NAME    Name of the hydrograph in the HDF file that will
+                            be overwritten.
 
 SRC_HYDROGRAPH              Hydrograph file used to overwrite the data.
 """)
