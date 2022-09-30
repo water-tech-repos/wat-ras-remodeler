@@ -9,12 +9,11 @@ from tests.test_util import delete_if_exists
 def teardown_module():
     """Cleanup created test files."""
     delete_if_exists("tests/data/Muncie.p04.tmp.hdf")
-    delete_if_exists("tests/data/Muncie.p04.tmp.hdf")
-    delete_if_exists("tests/data/Muncie.p04.tmp.hdf")
     delete_if_exists("systemInfoEncoded.txt")
     delete_if_exists("bco")
     delete_if_exists("tests/data/Muncie.bco04")
     delete_if_exists("Muncie.dss")
+
 
 
 def test_create_plan_tmp_hdf():
