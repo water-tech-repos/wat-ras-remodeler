@@ -41,7 +41,7 @@
 			]
 		}
 	},
-	"postCreateCommand": "pip3 --disable-pip-version-check --no-cache-dir install -r requirements.txt",
+	"postCreateCommand": "wget https://github.com/water-tech-repos/wat-ras-remodeler/releases/download/v1.0.0/v100.zip && echo A | unzip v100.zip && rm v100.zip && pip3 --disable-pip-version-check --no-cache-dir install -r requirements.txt",
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode",
 	"features": {
