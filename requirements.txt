@@ -9,8 +9,7 @@ packaging==21.3
 pandas==1.5.0
 pluggy==1.0.0
 py==1.11.0
-# cannot have relative path with the file: scheme. See https://www.rfc-editor.org/rfc/rfc3986.
-./bin/pydsstools-2.1-cp38-cp38-linux_x86_64.whl
+pydsstools @ https://github.com/gyanz/pydsstools/raw/a92d9b9c24dd451449592f94b3a1b64272a95938/dist/pydsstools-2.1-cp38-cp38-linux_x86_64.whl
 pyparsing==3.0.9
 pytest==7.1.3
 python-dateutil==2.8.2
